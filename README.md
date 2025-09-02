@@ -18,25 +18,25 @@
 
 1.  
     
-    ![erp](img/erp.png)
+    ![alt text](img/erp.png)
 2.  
     
-    ![APPfront](img\APPfront.png)
+    ![alt text](img\APPfront.png)
 3.  
     
-    ![ai](img\ai.png)
+    ![alt text](img\ai.png)
 4.  
     
-    ![diary](img\diary.png)
+    ![alt text](img\diary.png)
 5.  
     
-    ![zhiliao](img\zhiliao.png)
+    ![alt text](img\zhiliao.png)
 6.  
     
-    ![mood](img\mood.png)
+    ![alt text](img\mood.png)
 7.  
     
-    ![forum](img\forum.png)
+    ![alt text](img\forum.png)
     
 8.  
 9.  
