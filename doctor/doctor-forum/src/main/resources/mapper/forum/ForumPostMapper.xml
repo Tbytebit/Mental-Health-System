@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.forum.mapper.ForumPostMapper">
+    
+    <resultMap type="com.doctor.forum.domain.entity.ForumPost" id="ForumPostResult">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="avatar" column="avatar"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="images" column="images"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <sql id="selectForumPostVo">
+        select id, title, content, user_id, username, avatar, category_id, category_name, images, 
+        is_anonymous, like_count, comment_count, view_count, del_flag, create_by, create_time, 
+        update_by, update_time, remark
+        from forum_post
+    </sql>
+    
+    <select id="selectForumPostList" parameterType="com.doctor.forum.domain.entity.ForumPost" resultMap="ForumPostResult">
+        <include refid="selectForumPostVo"/>
+        <where>
+            del_flag = '0'
+            <if test="title != null and title != ''">
+                AND title like concat('%', #{title}, '%')
+            </if>
+            <if test="content != null and content != ''">
+                AND content like concat('%', #{content}, '%')
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                AND category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="isAnonymous != null">
+                AND is_anonymous = #{isAnonymous}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectForumPostById" parameterType="Long" resultMap="ForumPostResult">
+        <include refid="selectForumPostVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+    
+    <insert id="insertForumPost" parameterType="com.doctor.forum.domain.entity.ForumPost" useGeneratedKeys="true" keyProperty="id">
+        insert into forum_post (
+            <if test="id != null">id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="username != null and username != ''">username,</if>
+            <if test="avatar != null and avatar != ''">avatar,</if>
+            <if test="categoryId != null and categoryId != ''">category_id,</if>
+            <if test="categoryName != null and categoryName != ''">category_name,</if>
+            <if test="images != null and images != ''">images,</if>
+            <if test="isAnonymous != null">is_anonymous,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="commentCount != null">comment_count,</if>
+            <if test="viewCount != null">view_count,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        ) values (
+            <if test="id != null">#{id},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="avatar != null and avatar != ''">#{avatar},</if>
+            <if test="categoryId != null and categoryId != ''">#{categoryId},</if>
+            <if test="categoryName != null and categoryName != ''">#{categoryName},</if>
+            <if test="images != null and images != ''">#{images},</if>
+            <if test="isAnonymous != null">#{isAnonymous},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="commentCount != null">#{commentCount},</if>
+            <if test="viewCount != null">#{viewCount},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+    
+    <update id="updateForumPost" parameterType="com.doctor.forum.domain.entity.ForumPost">
+        update forum_post
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="categoryId != null and categoryId != ''">category_id = #{categoryId},</if>
+            <if test="categoryName != null and categoryName != ''">category_name = #{categoryName},</if>
+            <if test="images != null">images = #{images},</if>
+            <if test="isAnonymous != null">is_anonymous = #{isAnonymous},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+    
+    <update id="increaseViewCount" parameterType="Long">
+        update forum_post set view_count = view_count + 1 where id = #{id}
+    </update>
+    
+    <update id="increaseLikeCount" parameterType="Long">
+        update forum_post set like_count = like_count + 1 where id = #{id}
+    </update>
+    
+    <update id="decreaseLikeCount" parameterType="Long">
+        update forum_post set like_count = like_count - 1 where id = #{id} and like_count > 0
+    </update>
+    
+    <update id="increaseCommentCount" parameterType="Long">
+        update forum_post set comment_count = comment_count + 1 where id = #{id}
+    </update>
+    
+    <delete id="deleteForumPostById" parameterType="Long">
+        update forum_post set del_flag = '1' where id = #{id}
+    </delete>
+    
+    <delete id="deleteForumPostByIds" parameterType="Long">
+        update forum_post set del_flag = '1' where id in 
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="countForumPost" parameterType="ForumPost" resultType="java.lang.Integer">
+        select count(1) from forum_post
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="title != null and title != ''">
+                AND title like concat('%', #{title}, '%')
+            </if>
+            <if test="content != null and content != ''">
+                AND content like concat('%', #{content}, '%')
+            </if>
+            <if test="isTop != null">
+                AND is_top = #{isTop}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                AND del_flag = #{delFlag}
+            </if>
+            <if test="delFlag == null">
+                AND del_flag = '0'
+            </if>
+        </where>
+    </select>
+    
+</mapper> 

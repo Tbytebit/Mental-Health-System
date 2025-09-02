@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.chat.mapper.FriendRelationMapper">
+    
+    <!-- 插入好友关系 -->
+    <insert id="insert" parameterType="com.doctor.chat.entity.FriendRelation" useGeneratedKeys="true" keyProperty="relationId">
+        INSERT INTO chat_friend_relation (
+            user_id, friend_id, remark, status, create_time, update_time
+        ) VALUES (
+            #{userId,jdbcType=BIGINT}, #{friendId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
+            #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    
+    <!-- 获取用户的好友列表 -->
+    <select id="getFriendList" resultType="com.doctor.chat.entity.FriendRelation">
+        SELECT *
+        FROM chat_friend_relation
+        WHERE user_id = #{userId}
+          AND status = 0
+    </select>
+    
+    <!-- 检查是否已经是好友关系 -->
+    <select id="checkFriendRelation" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM chat_friend_relation
+        WHERE user_id = #{userId}
+          AND friend_id = #{friendId}
+          AND status = 0
+    </select>
+    
+    <!-- 删除好友关系（双向删除） -->
+    <delete id="deleteFriendRelation">
+        DELETE FROM chat_friend_relation
+        WHERE (user_id = #{userId} AND friend_id = #{friendId})
+           OR (user_id = #{friendId} AND friend_id = #{userId})
+    </delete>
+    
+    <!-- 根据昵称搜索用户 -->
+    <select id="searchUsersByNickname" resultType="java.util.Map">
+        SELECT 
+            u.user_id AS userId,
+            u.nick_name AS nickname,
+            u.avatar,
+            u.remark AS signature,
+            CASE WHEN fr.relation_id IS NOT NULL THEN 1 ELSE 0 END AS isFriend
+        FROM 
+            sys_user u
+        LEFT JOIN 
+            chat_friend_relation fr ON fr.friend_id = u.user_id AND fr.user_id = #{userId}
+        WHERE 
+            u.status = 0
+            AND u.user_id != #{userId}
+            AND u.nick_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY
+            CASE WHEN fr.relation_id IS NOT NULL THEN 0 ELSE 1 END,
+            u.create_time DESC
+        LIMIT 20
+    </select>
+    
+    <!-- 根据ID更新好友备注 -->
+    <update id="updateFriendRemark">
+        UPDATE chat_friend_relation
+        SET remark = #{remark},
+            update_time = #{updateTime}
+        WHERE user_id = #{userId}
+          AND friend_id = #{friendId}
+    </update>
+    
+    <!-- 根据用户ID获取用户信息 -->
+    <select id="getUserInfoById" resultType="java.util.Map">
+        SELECT 
+            user_id, user_name, nick_name, avatar
+        FROM 
+            sys_user
+        WHERE 
+            user_id = #{userId}
+            AND del_flag = '0'
+    </select>
+    
+</mapper> 

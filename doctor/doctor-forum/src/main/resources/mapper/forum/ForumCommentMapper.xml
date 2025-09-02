@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.forum.mapper.ForumCommentMapper">
+    
+    <resultMap type="com.doctor.forum.domain.entity.ForumComment" id="ForumCommentResult">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="avatar" column="avatar"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="replyId" column="reply_id"/>
+        <result property="replyUserId" column="reply_user_id"/>
+        <result property="replyUsername" column="reply_username"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <sql id="selectForumCommentVo">
+        select id, post_id, content, user_id, username, avatar, parent_id, reply_id, 
+        reply_user_id, reply_username, like_count, is_anonymous, del_flag, create_by, 
+        create_time, update_by, update_time, remark
+        from forum_comment
+    </sql>
+    
+    <select id="selectForumCommentList" parameterType="com.doctor.forum.domain.entity.ForumComment" resultMap="ForumCommentResult">
+        <include refid="selectForumCommentVo"/>
+        <where>
+            del_flag = '0'
+            <if test="postId != null">
+                AND post_id = #{postId}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+            <if test="replyId != null">
+                AND reply_id = #{replyId}
+            </if>
+            <if test="replyUserId != null">
+                AND reply_user_id = #{replyUserId}
+            </if>
+            <if test="isAnonymous != null">
+                AND is_anonymous = #{isAnonymous}
+            </if>
+        </where>
+        order by create_time asc
+    </select>
+    
+    <select id="selectForumCommentByPostId" parameterType="Long" resultMap="ForumCommentResult">
+        <include refid="selectForumCommentVo"/>
+        where post_id = #{postId} and del_flag = '0'
+        order by create_time asc
+    </select>
+    
+    <select id="selectForumCommentById" parameterType="Long" resultMap="ForumCommentResult">
+        <include refid="selectForumCommentVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+    
+    <insert id="insertForumComment" parameterType="com.doctor.forum.domain.entity.ForumComment" useGeneratedKeys="true" keyProperty="id">
+        insert into forum_comment (
+            <if test="id != null">id,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="username != null and username != ''">username,</if>
+            <if test="avatar != null and avatar != ''">avatar,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="replyId != null">reply_id,</if>
+            <if test="replyUserId != null">reply_user_id,</if>
+            <if test="replyUsername != null and replyUsername != ''">reply_username,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="isAnonymous != null">is_anonymous,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        ) values (
+            <if test="id != null">#{id},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="avatar != null and avatar != ''">#{avatar},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="replyId != null">#{replyId},</if>
+            <if test="replyUserId != null">#{replyUserId},</if>
+            <if test="replyUsername != null and replyUsername != ''">#{replyUsername},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="isAnonymous != null">#{isAnonymous},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+    
+    <update id="updateForumComment" parameterType="com.doctor.forum.domain.entity.ForumComment">
+        update forum_comment
+        <set>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="replyId != null">reply_id = #{replyId},</if>
+            <if test="replyUserId != null">reply_user_id = #{replyUserId},</if>
+            <if test="replyUsername != null and replyUsername != ''">reply_username = #{replyUsername},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="isAnonymous != null">is_anonymous = #{isAnonymous},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+    
+    <update id="increaseLikeCount" parameterType="Long">
+        update forum_comment set like_count = like_count + 1 where id = #{id}
+    </update>
+    
+    <update id="decreaseLikeCount" parameterType="Long">
+        update forum_comment set like_count = like_count - 1 where id = #{id} and like_count > 0
+    </update>
+    
+    <delete id="deleteForumCommentById" parameterType="Long">
+        update forum_comment set del_flag = '1' where id = #{id}
+    </delete>
+    
+    <delete id="deleteForumCommentByIds" parameterType="Long">
+        update forum_comment set del_flag = '1' where id in 
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteForumCommentByPostId" parameterType="Long">
+        update forum_comment set del_flag = '1' where post_id = #{postId}
+    </delete>
+    
+</mapper> 

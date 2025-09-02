@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.DoctorScheduledMapper">
+    
+    <resultMap type="DoctorScheduled" id="DoctorScheduledResult">
+        <result property="id"    column="id"    />
+        <result property="scheduledId"    column="scheduled_id"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="time"    column="time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="number"    column="number"    />
+        <result property="remainder"    column="remainder"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDoctorScheduledVo">
+        select id, scheduled_id, doctor_id, time, start_time, end_time, number, remainder, status, create_by, create_time, update_by, update_time, remark from t_doctor_scheduled
+    </sql>
+
+    <select id="selectDoctorScheduledList" parameterType="DoctorScheduledVo" resultType="DoctorScheduledVo">
+        select s.id, scheduled_id, s.doctor_id, s.time, s.start_time, s.end_time, s.number, s.remainder,  s.status, s.create_by, s.create_time, s.update_by,
+            s.update_time, s.remark, u.nick_name as doctor_name  from t_doctor_scheduled s LEFT JOIN sys_user u ON s.doctor_id = user_id
+        <where>
+            s.del_flag = 0
+            <if test="scheduledId != null "> and s.scheduled_id = #{scheduledId}</if>
+            <if test="doctorId != null "> and s.doctor_id = #{doctorId}</if>
+            <if test="time != null "> and s.time = #{time}</if>
+            <if test="startTime != null "> and s.start_time = #{startTime}</if>
+            <if test="endTime != null "> and s.end_time = #{endTime}</if>
+            <if test="number != null "> and s.number = #{number}</if>
+            <if test="remainder != null "> and s.remainder = #{remainder}</if>
+            <if test="status != null "> and s.status = #{status}</if>
+            <if test="doctorName != null  and doctorName != ''"> and u.nick_name like concat('%', #{doctorName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDoctorScheduledById" parameterType="Long" resultMap="DoctorScheduledResult">
+        <include refid="selectDoctorScheduledVo"/>
+        where id = #{id}
+    </select>
+    <select id="getDoctorScheduledList" resultType="com.doctor.web.domain.vo.DoctorScheduledVo">
+        select s.id, scheduled_id, s.doctor_id, s.time, s.start_time, s.end_time, s.number, s.remainder,  s.status, s.create_by, s.create_time, s.update_by,
+        s.update_time, s.remark, u.nick_name as doctor_name  from t_doctor_scheduled s LEFT JOIN sys_user u ON s.doctor_id = user_id
+        <where>
+            s.del_flag = 0 and s.start_time > now()
+            <if test="scheduledId != null "> and s.scheduled_id = #{scheduledId}</if>
+            <if test="doctorId != null "> and s.doctor_id = #{doctorId}</if>
+            <if test="time != null "> and s.time = #{time}</if>
+            <if test="startTime != null "> and s.start_time = #{startTime}</if>
+            <if test="endTime != null "> and s.end_time = #{endTime}</if>
+            <if test="number != null "> and s.number = #{number}</if>
+            <if test="remainder != null "> and s.remainder = #{remainder}</if>
+            <if test="status != null "> and s.status = #{status}</if>
+            <if test="doctorName != null  and doctorName != ''"> and u.nick_name like concat('%', #{doctorName}, '%')</if>
+        </where>
+
+    </select>
+
+    <insert id="insertDoctorScheduled" parameterType="DoctorScheduled">
+        insert into t_doctor_scheduled
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="scheduledId != null">scheduled_id,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="time != null">time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="number != null">number,</if>
+            <if test="remainder != null">remainder,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="scheduledId != null">#{scheduledId},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="time != null">#{time},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="number != null">#{number},</if>
+            <if test="remainder != null">#{remainder},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDoctorScheduled" parameterType="DoctorScheduled">
+        update t_doctor_scheduled
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduledId != null">scheduled_id = #{scheduledId},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="remainder != null">remainder = #{remainder},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDoctorScheduledById" parameterType="Long">
+        delete from t_doctor_scheduled where id = #{id}
+    </delete>
+
+    <delete id="deleteDoctorScheduledByIds" parameterType="String">
+        delete from t_doctor_scheduled where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

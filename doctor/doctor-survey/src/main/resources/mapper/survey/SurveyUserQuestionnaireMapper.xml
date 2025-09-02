@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.survey.mapper.SurveyUserQuestionnaireMapper">
+
+    <resultMap id="BaseResultMap" type="com.doctor.survey.domain.SurveyUserQuestionnaire">
+            <id property="user_id" column="user_id" jdbcType="BIGINT"/>
+            <id property="questionnaire_id" column="questionnaire_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id,questionnaire_id
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from survey_user_questionnaire
+        where  user_id = #{user_id,jdbcType=BIGINT} AND questionnaire_id = #{questionnaire_id,jdbcType=BIGINT} 
+    </select>
+    <select id="getUserIdsByQuestionnaireId" parameterType="String" resultType="String">
+        select user_id
+        from surevy_user_questionnaire
+        where questionnaire_id = #{questionnaire_id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        delete from survey_user_questionnaire
+        where  user_id = #{user_id,jdbcType=BIGINT} AND questionnaire_id = #{questionnaire_id,jdbcType=BIGINT} 
+    </delete>
+
+    <delete id="deleteAsUsers">
+        delete from survey_user_questionnaire where questionnaire_id=#{questionnaire_id}
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <insert id="insert">
+        insert into survey_user_questionnaire
+        ( user_id,questionnaire_id)
+        values (#{user_id,jdbcType=BIGINT},#{questionnaire_id,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective">
+        insert into survey_user_questionnaire
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="user_id != null">user_id,</if>
+                <if test="questionnaire_id != null">questionnaire_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="user_id != null">#{user_id,jdbcType=BIGINT},</if>
+                <if test="questionnaire_id != null">#{questionnaire_id,jdbcType=BIGINT},</if>
+        </trim>
+    </insert>
+    <insert id="batchUserQuestionnaire">
+        insert into survey_user_questionnaire(user_id, questionnaire_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.user_id},#{item.questionnaire_id})
+        </foreach>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.doctor.survey.domain.SurveyUserQuestionnaire">
+        update survey_user_questionnaire
+        <set>
+        </set>
+        where   user_id = #{user_id,jdbcType=BIGINT} AND questionnaire_id = #{questionnaire_id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.doctor.survey.domain.SurveyUserQuestionnaire">
+        update survey_user_questionnaire
+        set 
+        where   user_id = #{user_id,jdbcType=BIGINT} AND questionnaire_id = #{questionnaire_id,jdbcType=BIGINT} 
+    </update>
+</mapper>

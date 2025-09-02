@@ -1,0 +1,19 @@
+// 主题配色
+$primary-color: #5A7BEF;
+$secondary-color: #6DD0A2;
+$text-primary: #2C3E50;
+$text-secondary: #95A5A6;
+
+// 心情图标尺寸
+$mood-icon-size: 48rpx;
+$mood-icon-active-scale: 1.2;
+
+// 过渡动画
+@mixin transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// 阴影效果
+@mixin card-shadow {
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+}

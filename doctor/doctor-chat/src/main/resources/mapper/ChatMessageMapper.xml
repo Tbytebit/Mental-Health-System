@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.chat.mapper.ChatMessageMapper">
+    
+    <!-- 获取两个用户之间的聊天记录 -->
+    <select id="getChatHistory" resultType="com.doctor.chat.entity.ChatMessage">
+        SELECT *
+        FROM chat_message
+        WHERE (sender_id = #{userId1} AND receiver_id = #{userId2}
+           OR sender_id = #{userId2} AND receiver_id = #{userId1})
+           <if test="clearTime != null">
+           AND create_time > #{clearTime}
+           </if>
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 获取未读消息数量 -->
+    <select id="getUnreadCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM chat_message
+        WHERE receiver_id = #{receiverId}
+          AND status = 0
+    </select>
+    
+    <!-- 
+    注意: markMessageRead方法已在ChatMessageMapper.java接口中使用@Update注解定义，
+    为避免"Mapped Statements collection already contains key"错误，此处不再定义
+    -->
+    
+    <!-- 根据会话ID获取聊天记录 -->
+    <select id="getMessagesByConversationId" resultType="com.doctor.chat.entity.ChatMessage">
+        SELECT *
+        FROM chat_message
+        WHERE conversation_id = #{conversationId}
+        <if test="clearTime != null">
+        AND create_time > #{clearTime}
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 新增聊天消息 -->
+    <insert id="insert" parameterType="com.doctor.chat.entity.ChatMessage" useGeneratedKeys="true" keyProperty="messageId">
+        INSERT INTO chat_message (
+            sender_id,
+            receiver_id,
+            content,
+            type,
+            status,
+            conversation_id,
+            extra_data,
+            create_time,
+            update_time
+        ) VALUES (
+            #{senderId},
+            #{receiverId},
+            #{content},
+            #{type},
+            #{status},
+            #{conversationId},
+            #{extraData},
+            #{createTime},
+            #{updateTime}
+        )
+    </insert>
+    
+    <!-- 获取指定会话的未读消息数量 -->
+    <select id="countUnreadMessagesByConversation" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM chat_message
+        WHERE receiver_id = #{receiverId}
+          AND conversation_id = #{conversationId}
+          AND status = 0
+    </select>
+    
+</mapper> 

@@ -1,0 +1,5 @@
+chat:
+  # 好友申请接口
+  request-url: http://192.168.110.54:6680/chat/friend/request/send
+  # 删除好友关系接口
+  delete-friend-url: http://192.168.110.54:6680/chat/friend/delete

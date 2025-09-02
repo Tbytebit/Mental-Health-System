@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.doc.mapper.ResourceArticleMapper">
+
+    <resultMap type="com.doctor.doc.domain.ResourceArticle" id="ResourceArticleResult">
+        <id property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="content" column="content"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <resultMap type="com.doctor.doc.domain.dto.ResourceArticleDto" id="ResourceArticleDtoResult">
+        <id property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="content" column="content"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <sql id="selectResourceArticleVo">
+        select a.id, a.category_id, a.title, a.description, a.cover_image, a.content, 
+               a.is_featured, a.view_count, a.create_time, a.remark,
+               c.name as category_name
+        from doc_resource_article a
+        left join doc_resource_category c on a.category_id = c.id
+    </sql>
+    
+    <!-- 分页查询文章列表 -->
+    <select id="selectArticlePage" resultMap="ResourceArticleDtoResult">
+        SELECT * FROM (
+            <include refid="selectResourceArticleVo"/>
+            <where>
+                <if test="categoryId != null and categoryId != 0">
+                    AND a.category_id = #{categoryId}
+                </if>
+                AND a.id IS NOT NULL
+            </where>
+        ) AS temp
+        ORDER BY temp.create_time DESC
+    </select>
+    
+    <!-- 获取推荐文章列表 -->
+    <select id="selectFeaturedList" resultMap="ResourceArticleDtoResult">
+        SELECT * FROM (
+            <include refid="selectResourceArticleVo"/>
+            where a.is_featured = 1
+        ) AS temp
+        ORDER BY temp.create_time DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 获取相关文章 -->
+    <select id="selectRelatedList" resultMap="ResourceArticleDtoResult">
+        SELECT * FROM (
+            <include refid="selectResourceArticleVo"/>
+            <where>
+                <if test="categoryId != null and categoryId != 0">
+                    a.category_id = #{categoryId}
+                </if>
+                <if test="articleId != null">
+                    AND a.id != #{articleId}
+                </if>
+            </where>
+        ) AS temp
+        ORDER BY temp.view_count DESC, temp.create_time DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 获取文章详情 -->
+    <select id="selectArticleById" resultMap="ResourceArticleDtoResult">
+        SELECT * FROM (
+            <include refid="selectResourceArticleVo"/>
+            where a.id = #{id}
+        ) AS temp
+        LIMIT 1
+    </select>
+    
+    <!-- 增加浏览量 -->
+    <update id="incrementViewCount">
+        update doc_resource_article
+        set view_count = view_count + 1
+        where id = #{id} and id is not null
+    </update>
+
+</mapper>

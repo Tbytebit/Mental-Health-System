@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.doc.mapper.ResourceCategoryMapper">
+
+    <resultMap type="com.doctor.doc.domain.ResourceCategory" id="ResourceCategoryResult">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="icon" column="icon"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <sql id="selectResourceCategoryVo">
+        select id, name, icon, order_num, create_time, update_time, remark
+        from doc_resource_category
+    </sql>
+    
+    <!-- 查询资源分类列表 -->
+    <select id="selectList" resultMap="ResourceCategoryResult">
+        <include refid="selectResourceCategoryVo"/>
+        order by order_num asc
+    </select>
+
+</mapper>

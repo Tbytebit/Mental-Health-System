@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.chat.mapper.ChatMessageClearMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.doctor.chat.entity.ChatMessageClear">
+        <id column="clear_id" property="clearId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="friend_id" property="friendId" jdbcType="BIGINT"/>
+        <result column="conversation_id" property="conversationId" jdbcType="VARCHAR"/>
+        <result column="clear_time" property="clearTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        clear_id, user_id, friend_id, conversation_id, clear_time
+    </sql>
+
+    <!-- 插入记录 -->
+    <insert id="insert" parameterType="com.doctor.chat.entity.ChatMessageClear" useGeneratedKeys="true" keyProperty="clearId">
+        INSERT INTO chat_message_clear
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="friendId != null">
+                friend_id,
+            </if>
+            <if test="conversationId != null">
+                conversation_id,
+            </if>
+            <if test="clearTime != null">
+                clear_time,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="friendId != null">
+                #{friendId,jdbcType=BIGINT},
+            </if>
+            <if test="conversationId != null">
+                #{conversationId,jdbcType=VARCHAR},
+            </if>
+            <if test="clearTime != null">
+                #{clearTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

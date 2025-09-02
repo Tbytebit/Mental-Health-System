@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.AppointmentTaskMapper">
+
+    <resultMap type="com.doctor.web.domain.AppointmentTask" id="AppointmentTaskResult">
+        <id property="taskId" column="task_id"/>
+        <result property="appointmentId" column="appointment_id"/>
+        <result property="patientId" column="patient_id"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="doctorName" column="doctor_name"/>
+        <result property="scheduledTime" column="scheduled_time"/>
+        <result property="executeTime" column="execute_time"/>
+        <result property="status" column="status"/>
+        <result property="retryCount" column="retry_count"/>
+        <result property="failReason" column="fail_reason"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectAppointmentTaskVo">
+        select task_id, appointment_id, patient_id, doctor_id, doctor_name, scheduled_time, execute_time, status, retry_count, fail_reason, create_by, create_time, update_by, update_time, remark 
+        from appointment_task
+    </sql>
+
+    <select id="selectAppointmentTaskList" parameterType="com.doctor.web.domain.AppointmentTask" resultMap="AppointmentTaskResult">
+        <include refid="selectAppointmentTaskVo"/>
+        <where>
+            <if test="appointmentId != null ">and appointment_id = #{appointmentId}</if>
+            <if test="patientId != null ">and patient_id = #{patientId}</if>
+            <if test="doctorId != null ">and doctor_id = #{doctorId}</if>
+            <if test="doctorName != null  and doctorName != ''">and doctor_name like concat('%', #{doctorName}, '%')</if>
+            <if test="scheduledTime != null ">and scheduled_time = #{scheduledTime}</if>
+            <if test="executeTime != null ">and execute_time = #{executeTime}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="retryCount != null ">and retry_count = #{retryCount}</if>
+        </where>
+    </select>
+    
+    <select id="selectAppointmentTaskById" parameterType="Long" resultMap="AppointmentTaskResult">
+        <include refid="selectAppointmentTaskVo"/>
+        where task_id = #{taskId}
+    </select>
+    
+    <select id="selectPendingTasks" parameterType="Date" resultMap="AppointmentTaskResult">
+        <include refid="selectAppointmentTaskVo"/>
+        where status = 0 and scheduled_time &lt;= #{currentTime}
+    </select>
+        
+    <insert id="insertAppointmentTask" parameterType="com.doctor.web.domain.AppointmentTask" useGeneratedKeys="true" keyProperty="taskId">
+        insert into appointment_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appointmentId != null">appointment_id,</if>
+            <if test="patientId != null">patient_id,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="doctorName != null">doctor_name,</if>
+            <if test="scheduledTime != null">scheduled_time,</if>
+            <if test="executeTime != null">execute_time,</if>
+            <if test="status != null">status,</if>
+            <if test="retryCount != null">retry_count,</if>
+            <if test="failReason != null">fail_reason,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appointmentId != null">#{appointmentId},</if>
+            <if test="patientId != null">#{patientId},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="doctorName != null">#{doctorName},</if>
+            <if test="scheduledTime != null">#{scheduledTime},</if>
+            <if test="executeTime != null">#{executeTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="retryCount != null">#{retryCount},</if>
+            <if test="failReason != null">#{failReason},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAppointmentTask" parameterType="com.doctor.web.domain.AppointmentTask">
+        update appointment_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appointmentId != null">appointment_id = #{appointmentId},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="doctorName != null">doctor_name = #{doctorName},</if>
+            <if test="scheduledTime != null">scheduled_time = #{scheduledTime},</if>
+            <if test="executeTime != null">execute_time = #{executeTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="retryCount != null">retry_count = #{retryCount},</if>
+            <if test="failReason != null">fail_reason = #{failReason},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteAppointmentTaskById" parameterType="Long">
+        delete from appointment_task where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteAppointmentTaskByIds" parameterType="Long">
+        delete from appointment_task where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+</mapper> 

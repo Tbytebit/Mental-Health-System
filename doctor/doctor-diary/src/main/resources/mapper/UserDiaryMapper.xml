@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.diary.mapper.UserDiaryMapper">
+    
+    <resultMap type="com.doctor.diary.domain.UserDiary" id="UserDiaryResult">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="diaryName" column="diary_name"/>
+        <result property="diaryContent" column="diary_content"/>
+        <result property="mood" column="mood"/>
+        <result property="images" column="images"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+    
+    <sql id="selectUserDiaryVo">
+        select id, user_id, diary_name, diary_content, mood, images, create_time, update_time, remark, del_flag
+        from user_diary
+    </sql>
+    
+    <select id="selectUserDiaryById" parameterType="Long" resultMap="UserDiaryResult">
+        <include refid="selectUserDiaryVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+    
+    <select id="selectUserDiaryList" resultMap="UserDiaryResult">
+        <include refid="selectUserDiaryVo"/>
+        where del_flag = '0'
+        <if test="userId != null">
+            and user_id = #{userId}
+        </if>
+        <if test="mood != null and mood != ''">
+            and mood = #{mood}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (diary_name like concat('%', #{keyword}, '%') or 
+                diary_content like concat('%', #{keyword}, '%'))
+        </if>
+        order by create_time desc
+    </select>
+    
+    <insert id="insertUserDiary" parameterType="com.doctor.diary.domain.UserDiary" useGeneratedKeys="true" keyProperty="id">
+        insert into user_diary (
+            <if test="userId != null">user_id,</if>
+            <if test="diaryName != null and diaryName != ''">diary_name,</if>
+            <if test="diaryContent != null and diaryContent != ''">diary_content,</if>
+            <if test="mood != null and mood != ''">mood,</if>
+            <if test="images != null">images,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            del_flag
+        ) values (
+            <if test="userId != null">#{userId},</if>
+            <if test="diaryName != null and diaryName != ''">#{diaryName},</if>
+            <if test="diaryContent != null and diaryContent != ''">#{diaryContent},</if>
+            <if test="mood != null and mood != ''">#{mood},</if>
+            <if test="images != null">#{images},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            '0'
+        )
+    </insert>
+    
+    <update id="updateUserDiary" parameterType="com.doctor.diary.domain.UserDiary">
+        update user_diary
+        <set>
+            <if test="diaryName != null and diaryName != ''">diary_name = #{diaryName},</if>
+            <if test="diaryContent != null and diaryContent != ''">diary_content = #{diaryContent},</if>
+            <if test="mood != null and mood != ''">mood = #{mood},</if>
+            <if test="images != null">images = #{images},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+        </set>
+        where id = #{id} and del_flag = '0'
+    </update>
+    
+    <update id="deleteUserDiaryById" parameterType="Long">
+        update user_diary set del_flag = '1' where id = #{id}
+    </update>
+    
+    <update id="deleteUserDiaryByIds" parameterType="Long">
+        update user_diary set del_flag = '1' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+</mapper> 

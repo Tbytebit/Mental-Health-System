@@ -1,0 +1,20 @@
+# 自定义配置
+chat:
+  # WebSocket配置
+  websocket:
+    allowed-origins: "*"
+    # 心跳检测间隔（秒）
+    heartbeat-interval: 30 
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.doctor.chat.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    # 开启参数名称映射
+    use-actual-param-name: true
+  global-config:
+    db-config:
+      id-type: auto 

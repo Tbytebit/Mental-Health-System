@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.ai.mapper.AiAssistantMapper">
+    
+    <resultMap type="AiAssistant" id="AiAssistantResult">
+        <id     property="assistantId"     column="assistant_id"      />
+        <result property="name"            column="name"              />
+        <result property="description"     column="description"       />
+        <result property="avatar"          column="avatar"            />
+        <result property="assistantType"   column="assistant_type"    />
+        <result property="systemPrompt"    column="system_prompt"     />
+        <result property="orderNum"        column="order_num"         />
+        <result property="status"          column="status"            />
+        <result property="delFlag"         column="del_flag"          />
+        <result property="createBy"        column="create_by"         />
+        <result property="createTime"      column="create_time"       />
+        <result property="updateBy"        column="update_by"         />
+        <result property="updateTime"      column="update_time"       />
+    </resultMap>
+
+    <sql id="selectAiAssistantVo">
+        select assistant_id, name, description, avatar, assistant_type, system_prompt, order_num, status, del_flag, create_by, create_time, update_by, update_time 
+        from ai_assistant
+    </sql>
+
+    <select id="selectAiAssistantList" parameterType="AiAssistant" resultMap="AiAssistantResult">
+        <include refid="selectAiAssistantVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="assistantType != null "> and assistant_type = #{assistantType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            and del_flag = '0'
+        </where>
+        order by order_num
+    </select>
+    
+    <select id="selectAiAssistantById" parameterType="Long" resultMap="AiAssistantResult">
+        <include refid="selectAiAssistantVo"/>
+        where assistant_id = #{assistantId} and del_flag = '0'
+    </select>
+        
+    <insert id="insertAiAssistant" parameterType="AiAssistant" useGeneratedKeys="true" keyProperty="assistantId">
+        insert into ai_assistant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null and description != ''">description,</if>
+            <if test="avatar != null and avatar != ''">avatar,</if>
+            <if test="assistantType != null">assistant_type,</if>
+            <if test="systemPrompt != null and systemPrompt != ''">system_prompt,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            del_flag
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="avatar != null and avatar != ''">#{avatar},</if>
+            <if test="assistantType != null">#{assistantType},</if>
+            <if test="systemPrompt != null and systemPrompt != ''">#{systemPrompt},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            '0'
+        </trim>
+    </insert>
+
+    <update id="updateAiAssistant" parameterType="AiAssistant">
+        update ai_assistant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            <if test="assistantType != null">assistant_type = #{assistantType},</if>
+            <if test="systemPrompt != null and systemPrompt != ''">system_prompt = #{systemPrompt},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where assistant_id = #{assistantId}
+    </update>
+
+    <update id="deleteAiAssistantById" parameterType="Long">
+        update ai_assistant set del_flag = '2' where assistant_id = #{assistantId}
+    </update>
+
+    <update id="deleteAiAssistantByIds" parameterType="String">
+        update ai_assistant set del_flag = '2' where assistant_id in 
+        <foreach item="assistantId" collection="array" open="(" separator="," close=")">
+            #{assistantId}
+        </foreach>
+    </update>
+    
+</mapper> 

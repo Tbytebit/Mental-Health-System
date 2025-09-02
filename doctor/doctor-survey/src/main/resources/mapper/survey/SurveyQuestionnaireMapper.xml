@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.survey.mapper.SurveyQuestionnaireMapper">
+    
+    <resultMap type="SurveyQuestionnaire" id="SurveyQuestionnaireResult">
+        <result property="questionnaireId"    column="questionnaire_id"    />
+        <result property="questionnaireName"    column="questionnaire_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="publishDate"    column="publish_date"    />
+        <result property="questionCount"    column="question_count"    />
+        <result property="participantCount"    column="participant_count"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectSurveyQuestionnaireVo">
+        select questionnaire_id, questionnaire_name, create_by, create_time, update_by, update_time, remark, publish_date, question_count, participant_count, status from survey_questionnaire
+    </sql>
+
+    <select id="selectSurveyQuestionnaireList"  resultMap="SurveyQuestionnaireResult">
+        select q.questionnaire_id, q.questionnaire_name, q.create_by, q.create_time, q.update_by, q.update_time, q.remark, q.publish_date, q.question_count, q.participant_count, q.status
+        from survey_questionnaire q
+        left join survey_user_questionnaire uq on q.questionnaire_id = uq.questionnaire_id
+        where uq.user_id = #{userId}
+        <if test="questionnaireName != null  and questionnaireName != ''">
+        and questionnaire_name like concat('%', #{questionnaireName}, '%')</if>
+        <if test="status != null ">
+        and status = #{status}</if>
+    </select>
+    
+    <select id="selectSurveyQuestionnaireByQuestionnaireId" parameterType="String" resultMap="SurveyQuestionnaireResult">
+        <include refid="selectSurveyQuestionnaireVo"/>
+        where questionnaire_id = #{questionnaireId}
+    </select>
+    <select id="selectUserListByQuestionnaireId" resultType="com.doctor.common.core.domain.entity.SysUser">
+        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+        from sys_user u
+        left join survey_user_questionnaire uq on u.user_id = uq.user_id
+        where u.del_flag = '0' and uq.questionnaire_id = #{questionnaireId}
+          and u.user_id != 1
+        <if test="userName != null and userName != ''">
+            AND u.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="phonenumber != null and phonenumber != ''">
+            AND u.phonenumber like concat('%', #{phonenumber}, '%')
+        </if>
+    </select>
+    <select id="selectUnAssignUserListByQuestionnaireId"
+            resultType="com.doctor.common.core.domain.entity.SysUser">
+        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+        from sys_user u
+        where u.del_flag = '0'
+        and u.user_id != 1
+        and u.user_id not in
+        (
+        select u.user_id
+        from sys_user u
+        inner join survey_user_questionnaire uq
+        on u.user_id = uq.user_id
+        and uq.questionnaire_id = #{questionnaireId}
+        )
+        <if test="userName != null and userName != ''">
+            AND u.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="phonenumber != null and phonenumber != ''">
+            AND u.phonenumber like concat('%', #{phonenumber}, '%')
+        </if>
+    </select>
+
+
+    <insert id="insertSurveyQuestionnaire" parameterType="SurveyQuestionnaire" useGeneratedKeys="true" keyProperty="questionnaireId">
+        insert into survey_questionnaire
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionnaireName != null">questionnaire_name,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="publishDate != null">publish_date,</if>
+            <if test="questionCount != null">question_count,</if>
+            <if test="participantCount != null">participant_count,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionnaireName != null">#{questionnaireName},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="publishDate != null">#{publishDate},</if>
+            <if test="questionCount != null">#{questionCount},</if>
+            <if test="participantCount != null">#{participantCount},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSurveyQuestionnaire" parameterType="SurveyQuestionnaire">
+        update survey_questionnaire
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionnaireName != null">questionnaire_name = #{questionnaireName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="publishDate != null">publish_date = #{publishDate},</if>
+            <if test="questionCount != null">question_count = #{questionCount},</if>
+            <if test="participantCount != null">participant_count = #{participantCount},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where questionnaire_id = #{questionnaireId}
+    </update>
+    <update id="publishQuestionnaire" parameterType="String">
+        update survey_questionnaire
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = 1,</if>
+            publish_date = Now()
+        </trim>
+        where questionnaire_id = #{questionnaireId}
+    </update>
+    <update id="updateSurveyQuestionCount">
+        update survey_questionnaire
+        <trim prefix="SET" suffixOverrides=",">
+            question_count = #{questionCount}
+        </trim>
+        where questionnaire_id = #{questionnaireId}
+    </update>
+
+        <update id="updateQuestionCount">
+            update survey_questionnaire
+            set question_count = question_count+1
+            where questionnaire_id = #{quesitonnaireId}
+        </update>
+    <update id="deQuestionnaireCount">
+            update survey_questionnaire
+            set question_count = question_count -1
+            where questionnaire_id = #{questionnaireId}
+    </update>
+    <update id="updateSurveyRespondentsCount">
+        update survey_questionnaire
+        set participant_count = participant_count +1
+        where questionnaire_id = #{questionnaireId}
+    </update>
+    <update id="deSurveyRespondentsCount">
+        update survey_questionnaire
+        set participant_count = participant_count -1
+        where questionnaire_id = #{questionnaireId}
+    </update>
+    <update id="updateSurveyQuestionnaireStatus">
+        update survey_questionnaire
+        set status = #{status}
+        where questionnaire_id = #{questionnaireId}
+    </update>
+
+
+    <delete id="deleteSurveyQuestionnaireByQuestionnaireId" parameterType="String">
+        delete from survey_questionnaire where questionnaire_id = #{questionnaireId}
+    </delete>
+
+    <delete id="deleteSurveyQuestionnaireByQuestionnaireIds" parameterType="String">
+        delete from survey_questionnaire where questionnaire_id in 
+        <foreach item="questionnaireId" collection="array" open="(" separator="," close=")">
+            #{questionnaireId}
+        </foreach>
+    </delete>
+
+</mapper>

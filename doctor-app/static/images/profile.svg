@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- 圆形背景 -->
+  <circle cx="50" cy="50" r="45" fill="#E0E0E0" />
+  
+  <!-- 头部 -->
+  <circle cx="50" cy="40" r="20" fill="#FFFFFF" />
+  
+  <!-- 身体轮廓 -->
+  <path d="M30,70 Q50,90 70,70" stroke="#FFFFFF" stroke-width="8" fill="none" />
+  
+  <!-- 简化的面部特征 -->
+  <circle cx="43" cy="37" r="3" fill="#757575" />
+  <circle cx="57" cy="37" r="3" fill="#757575" />
+  <path d="M43,47 Q50,52 57,47" stroke="#757575" stroke-width="2" fill="none" />
+</svg>

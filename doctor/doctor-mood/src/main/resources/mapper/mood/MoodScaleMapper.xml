@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.mood.mapper.MoodScaleMapper">
+    
+    <resultMap type="com.doctor.mood.domain.entity.MoodScale" id="MoodScaleResult">
+        <id property="scaleId" column="scale_id"/>
+        <result property="scaleName" column="scale_name"/>
+        <result property="scaleDescription" column="scale_description"/>
+        <result property="scaleType" column="scale_type"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMoodScaleVo">
+        select scale_id, scale_name, scale_description, scale_type, status, del_flag, create_by, create_time, update_by, update_time, remark
+        from mood_scale
+    </sql>
+
+    <select id="selectMoodScaleList" parameterType="com.doctor.mood.domain.entity.MoodScale" resultMap="MoodScaleResult">
+        <include refid="selectMoodScaleVo"/>
+        <where>  
+            <if test="scaleName != null  and scaleName != ''"> and scale_name like concat('%', #{scaleName}, '%')</if>
+            <if test="scaleDescription != null  and scaleDescription != ''"> and scale_description like concat('%', #{scaleDescription}, '%')</if>
+            <if test="scaleType != null  and scaleType != ''"> and scale_type = #{scaleType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            and del_flag = '0'
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectMoodScaleByScaleId" parameterType="Long" resultMap="MoodScaleResult">
+        <include refid="selectMoodScaleVo"/>
+        where scale_id = #{scaleId} and del_flag = '0'
+    </select>
+        
+    <insert id="insertMoodScale" parameterType="com.doctor.mood.domain.entity.MoodScale" useGeneratedKeys="true" keyProperty="scaleId">
+        insert into mood_scale
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="scaleName != null">scale_name,</if>
+            <if test="scaleDescription != null">scale_description,</if>
+            <if test="scaleType != null">scale_type,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="scaleName != null">#{scaleName},</if>
+            <if test="scaleDescription != null">#{scaleDescription},</if>
+            <if test="scaleType != null">#{scaleType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMoodScale" parameterType="com.doctor.mood.domain.entity.MoodScale">
+        update mood_scale
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scaleName != null">scale_name = #{scaleName},</if>
+            <if test="scaleDescription != null">scale_description = #{scaleDescription},</if>
+            <if test="scaleType != null">scale_type = #{scaleType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where scale_id = #{scaleId}
+    </update>
+
+    <delete id="deleteMoodScaleByScaleId" parameterType="Long">
+        update mood_scale set del_flag = '2' where scale_id = #{scaleId}
+    </delete>
+
+    <delete id="deleteMoodScaleByScaleIds" parameterType="String">
+        update mood_scale set del_flag = '2' where scale_id in 
+        <foreach item="scaleId" collection="array" open="(" separator="," close=")">
+            #{scaleId}
+        </foreach>
+    </delete>
+</mapper> 

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.ai.mapper.AiMessageMapper">
+    
+    <resultMap type="AiMessage" id="AiMessageResult">
+        <id     property="messageId"        column="message_id"      />
+        <result property="chatId"           column="chat_id"         />
+        <result property="userId"           column="user_id"         />
+        <result property="content"          column="content"         />
+        <result property="isUser"           column="is_user"         />
+        <result property="messageType"      column="message_type"    />
+        <result property="delFlag"          column="del_flag"        />
+        <result property="createBy"         column="create_by"       />
+        <result property="createTime"       column="create_time"     />
+        <result property="updateBy"         column="update_by"       />
+        <result property="updateTime"       column="update_time"     />
+    </resultMap>
+
+    <sql id="selectAiMessageVo">
+        select message_id, chat_id, user_id, content, is_user, message_type, del_flag, create_by, create_time, update_by, update_time 
+        from ai_message
+    </sql>
+
+    <select id="selectAiMessageById" parameterType="Long" resultMap="AiMessageResult">
+        <include refid="selectAiMessageVo"/>
+        where message_id = #{messageId} and del_flag = '0'
+    </select>
+    
+    <select id="selectMessagesByChatId" parameterType="Map" resultMap="AiMessageResult">
+        <include refid="selectAiMessageVo"/>
+        where chat_id = #{chatId} and del_flag = '0'
+        <if test="beforeId != null">
+            and message_id &lt; #{beforeId}
+        </if>
+        order by create_time asc, message_id asc
+        <if test="limit != null">
+            limit #{limit}
+        </if>
+    </select>
+        
+    <insert id="insertAiMessage" parameterType="AiMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into ai_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chatId != null">chat_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="isUser != null and isUser != ''">is_user,</if>
+            <if test="messageType != null and messageType != ''">message_type,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            del_flag
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="chatId != null">#{chatId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="isUser != null and isUser != ''">#{isUser},</if>
+            <if test="messageType != null and messageType != ''">#{messageType},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            '0'
+        </trim>
+    </insert>
+
+    <update id="updateAiMessage" parameterType="AiMessage">
+        update ai_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="chatId != null">chat_id = #{chatId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="isUser != null and isUser != ''">is_user = #{isUser},</if>
+            <if test="messageType != null and messageType != ''">message_type = #{messageType},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <update id="deleteAiMessageById" parameterType="Long">
+        delete from ai_message where message_id = #{messageId}
+    </update>
+
+    <update id="deleteMessagesByChatId" parameterType="Long">
+        delete from ai_message where chat_id = #{chatId}
+    </update>
+
+    <update id="deleteAiMessageByIds" parameterType="String">
+        delete from ai_message where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </update>
+    
+</mapper>

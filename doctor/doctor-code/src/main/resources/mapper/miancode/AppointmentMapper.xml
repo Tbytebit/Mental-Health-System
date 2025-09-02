@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.AppointmentMapper">
+    
+    <resultMap type="Appointment" id="AppointmentResult">
+        <result property="appointmentId"    column="appointment_id"    />
+        <result property="doctorScheduledId"    column="doctor_scheduled_id"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="doctorName"    column="doctor_name"    />
+        <result property="trueName"    column="true_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="appointmentDate"    column="appointment_date"    />
+        <result property="appointmentTime"    column="appointment_time"    />
+        <result property="code"    column="code"    />
+        <result property="appointmentStatus"    column="appointment_status"    />
+        <result property="score"    column="score"    />
+        <result property="comment"    column="comment"    />
+        <result property="commentTime"    column="comment_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAppointmentVo">
+        select appointment_id, doctor_scheduled_id, patient_id, doctor_id, doctor_name, true_name, phone, appointment_date, appointment_time,code, appointment_status, score, comment, comment_time,del_flag , create_by, create_time, update_by, update_time, remark from t_appointment
+    </sql>
+
+    <select id="selectAppointmentList" parameterType="Appointment" resultMap="AppointmentResult">
+        <include refid="selectAppointmentVo"/>
+        <where>
+            del_flag = 0
+            <if test="doctorScheduledId != null "> and doctor_scheduled_id = #{doctorScheduledId}</if>
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="doctorId != null "> and doctor_id = #{doctorId}</if>
+            <if test="doctorName != null  and doctorName != ''"> and doctor_name like concat('%', #{doctorName}, '%')</if>
+            <if test="trueName != null  and trueName != ''"> and true_name like concat('%', #{trueName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="appointmentDate != null "> and appointment_date = #{appointmentDate}</if>
+            <if test="appointmentTime != null  and appointmentTime != ''"> and appointment_time = #{appointmentTime}</if>
+            <if test="appointmentStatus != null  and appointmentStatus != ''"> and appointment_status = #{appointmentStatus}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectAppointmentByAppointmentId" parameterType="Long" resultMap="AppointmentResult">
+        <include refid="selectAppointmentVo"/>
+        where appointment_id = #{appointmentId}
+    </select>
+    <select id="getUserCommentAppointment" resultType="com.doctor.web.domain.Appointment">
+        <include refid="selectAppointmentVo"/>
+        where del_flag = 0 and appointment_status in (3,5) ORDER BY create_time DESC
+    </select>
+
+    <insert id="insertAppointment" parameterType="Appointment" useGeneratedKeys="true" keyProperty="appointmentId">
+        insert into t_appointment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="doctorScheduledId != null">doctor_scheduled_id,</if>
+            <if test="patientId != null">patient_id,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="doctorName != null">doctor_name,</if>
+            <if test="trueName != null">true_name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="appointmentDate != null">appointment_date,</if>
+            <if test="appointmentTime != null">appointment_time,</if>
+            <if test="code != null">code,</if>
+            <if test="appointmentStatus != null">appointment_status,</if>
+            <if test="score != null">score,</if>
+            <if test="comment != null">comment,</if>
+            <if test="commentTime != null">comment_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="doctorScheduledId != null">#{doctorScheduledId},</if>
+            <if test="patientId != null">#{patientId},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="doctorName != null">#{doctorName},</if>
+            <if test="trueName != null">#{trueName},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="appointmentDate != null">#{appointmentDate},</if>
+            <if test="appointmentTime != null">#{appointmentTime},</if>
+            <if test="code != null">#{code},</if>
+            <if test="appointmentStatus != null">#{appointmentStatus},</if>
+            <if test="score != null">#{score},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="commentTime != null">#{commentTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAppointment" parameterType="Appointment">
+        update t_appointment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="doctorScheduledId != null">doctor_scheduled_id = #{doctorScheduledId},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="doctorName != null">doctor_name = #{doctorName},</if>
+            <if test="trueName != null">true_name = #{trueName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="appointmentDate != null">appointment_date = #{appointmentDate},</if>
+            <if test="appointmentTime != null">appointment_time = #{appointmentTime},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="appointmentStatus != null">appointment_status = #{appointmentStatus},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="commentTime != null">comment_time = #{commentTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where appointment_id = #{appointmentId}
+    </update>
+
+    <delete id="deleteAppointmentByAppointmentId" parameterType="Long">
+        delete from t_appointment where appointment_id = #{appointmentId}
+    </delete>
+
+    <delete id="deleteAppointmentByAppointmentIds" parameterType="String">
+        update t_appointment  set del_flag = 2 where appointment_id in
+        <foreach item="appointmentId" collection="array" open="(" separator="," close=")">
+            #{appointmentId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.HelpMapper">
+    
+    <resultMap type="com.doctor.web.domain.Help" id="HelpResult">
+        <result property="helpId"    column="help_id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="category"    column="category"    />
+        <result property="status"    column="status"    />
+        <result property="visitCount"    column="visit_count"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="relatedLinks"    column="related_links"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHelpVo">
+        select help_id, title, content, category, status, visit_count, like_count, related_links, del_flag, create_by, create_time, update_by, update_time, remark from t_help
+    </sql>
+
+    <select id="selectHelpList" parameterType="com.doctor.web.domain.Help" resultMap="HelpResult">
+        <include refid="selectHelpVo"/>
+        <where>
+            del_flag = 0
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and content like concat('%', #{content}, '%')</if>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectHelpByHelpId" parameterType="Long" resultMap="HelpResult">
+        <include refid="selectHelpVo"/>
+        where help_id = #{helpId}
+    </select>
+        
+    <insert id="insertHelp" parameterType="com.doctor.web.domain.Help" useGeneratedKeys="true" keyProperty="helpId">
+        insert into t_help
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="category != null and category != ''">category,</if>
+            <if test="status != null">status,</if>
+            <if test="visitCount != null">visit_count,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="relatedLinks != null">related_links,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="category != null and category != ''">#{category},</if>
+            <if test="status != null">#{status},</if>
+            <if test="visitCount != null">#{visitCount},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="relatedLinks != null">#{relatedLinks},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHelp" parameterType="com.doctor.web.domain.Help">
+        update t_help
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="visitCount != null">visit_count = #{visitCount},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="relatedLinks != null">related_links = #{relatedLinks},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where help_id = #{helpId}
+    </update>
+
+    <delete id="deleteHelpByHelpId" parameterType="Long">
+        delete from t_help where help_id = #{helpId}
+    </delete>
+
+    <delete id="deleteHelpByHelpIds" parameterType="String">
+        update t_help  set del_flag = 2 where help_id in
+        <foreach item="helpId" collection="array" open="(" separator="," close=")">
+            #{helpId}
+        </foreach>
+    </delete>
+</mapper>

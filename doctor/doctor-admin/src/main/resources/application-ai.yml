@@ -1,0 +1,18 @@
+# AI模块配置
+ai:
+  # 通义千问API配置
+  dashscope:
+    # API密钥
+    apiKey: sk2-abc
+    # 使用的模型
+    model: qwen-plus
+    # API端点
+    endpoint: https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
+    # 速率限制配置
+    rateLimit:
+      # 最大重试次数
+      maxRetries: 3
+      # 初始等待时间(毫秒)
+      initialWaitTime: 1000
+      # 随机波动因子(0.5表示在基础等待时间上下浮动50%)
+      jitterFactor: 0.5 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.MessageNotificationMapper">
+    
+    <resultMap type="com.doctor.web.domain.MessageNotification" id="MessageNotificationResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="senderUserId"    column="sender_user_id"    />
+        <result property="recipientUserId"    column="recipient_user_id"    />
+        <result property="messageName"    column="message_name"    />
+        <result property="messageType"    column="message_type"    />
+        <result property="messageContent"    column="message_content"    />
+        <result property="sendTime"    column="send_time"    />
+        <result property="isRead"    column="is_read"    />
+        <result property="attachments"    column="attachments"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMessageNotificationVo">
+        select message_id, sender_user_id, recipient_user_id, message_name, message_type, message_content, send_time, is_read, attachments, del_flag, create_by, create_time, update_by, update_time, remark from t_message_notification
+    </sql>
+
+    <select id="selectMessageNotificationList" parameterType="com.doctor.web.domain.MessageNotification" resultMap="MessageNotificationResult">
+        <include refid="selectMessageNotificationVo"/>
+        <where>
+            del_flag = 0 and recipient_user_id is null
+            <if test="senderUserId != null "> and sender_user_id = #{senderUserId}</if>
+            <if test="recipientUserId != null "> and recipient_user_id = #{recipientUserId}</if>
+            <if test="messageName != null  and messageName != ''"> and message_name like concat('%', #{messageName}, '%')</if>
+            <if test="messageType != null "> and message_type = #{messageType}</if>
+            <if test="isRead != null "> and is_read = #{isRead}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectMessageNotificationByMessageId" parameterType="Long" resultMap="MessageNotificationResult">
+        <include refid="selectMessageNotificationVo"/>
+        where message_id = #{messageId}
+    </select>
+    <select id="getUserMsgList" resultType="com.doctor.web.domain.MessageNotification">
+        <include refid="selectMessageNotificationVo"/>
+        <where>
+            del_flag = 0 and recipient_user_id is not null
+            <if test="senderUserId != null "> and sender_user_id = #{senderUserId}</if>
+            <if test="recipientUserId != null "> and recipient_user_id = #{recipientUserId}</if>
+            <if test="messageName != null  and messageName != ''"> and message_name like concat('%', #{messageName}, '%')</if>
+            <if test="messageType != null "> and message_type = #{messageType}</if>
+            <if test="isRead != null "> and is_read = #{isRead}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <insert id="insertMessageNotification" parameterType="com.doctor.web.domain.MessageNotification" useGeneratedKeys="true" keyProperty="messageId">
+        insert into t_message_notification
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="senderUserId != null">sender_user_id,</if>
+            <if test="recipientUserId != null">recipient_user_id,</if>
+            <if test="messageName != null and messageName != ''">message_name,</if>
+            <if test="messageType != null">message_type,</if>
+            <if test="messageContent != null and messageContent != ''">message_content,</if>
+            <if test="sendTime != null">send_time,</if>
+            <if test="isRead != null">is_read,</if>
+            <if test="attachments != null">attachments,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="senderUserId != null">#{senderUserId},</if>
+            <if test="recipientUserId != null">#{recipientUserId},</if>
+            <if test="messageName != null and messageName != ''">#{messageName},</if>
+            <if test="messageType != null">#{messageType},</if>
+            <if test="messageContent != null and messageContent != ''">#{messageContent},</if>
+            <if test="sendTime != null">#{sendTime},</if>
+            <if test="isRead != null">#{isRead},</if>
+            <if test="attachments != null">#{attachments},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMessageNotification" parameterType="com.doctor.web.domain.MessageNotification">
+        update t_message_notification
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="senderUserId != null">sender_user_id = #{senderUserId},</if>
+            <if test="recipientUserId != null">recipient_user_id = #{recipientUserId},</if>
+            <if test="messageName != null and messageName != ''">message_name = #{messageName},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="messageContent != null and messageContent != ''">message_content = #{messageContent},</if>
+            <if test="sendTime != null">send_time = #{sendTime},</if>
+            <if test="isRead != null">is_read = #{isRead},</if>
+            <if test="attachments != null">attachments = #{attachments},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteMessageNotificationByMessageId" parameterType="Long">
+        delete from t_message_notification where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteMessageNotificationByMessageIds" parameterType="String">
+        update t_message_notification  set del_flag = 2 where message_id in
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+</mapper>

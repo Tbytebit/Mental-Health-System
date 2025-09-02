@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.survey.mapper.SurveyQuestionMapper">
+    
+    <resultMap type="SurveyQuestion" id="SurveyQuestionResult">
+        <result property="questionId"    column="question_id"    />
+        <result property="questionnaireId"    column="questionnaire_id"    />
+        <result property="questionType"    column="question_type"    />
+        <result property="questionTitle"    column="question_title"    />
+        <result property="questionOrder"    column="question_order"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSurveyQuestionVo">
+        select question_id, questionnaire_id, question_type, question_title, question_order, create_by, create_time, update_by, update_time, remark from survey_question
+    </sql>
+
+    <select id="selectSurveyQuestionList" parameterType="SurveyQuestion" resultMap="SurveyQuestionResult">
+        <include refid="selectSurveyQuestionVo"/>
+        <where>  
+            <if test="questionnaireId != null "> and questionnaire_id = #{questionnaireId}</if>
+            <if test="questionType != null "> and question_type = #{questionType}</if>
+            <if test="questionTitle != null  and questionTitle != ''"> and question_title = #{questionTitle}</if>
+            <if test="questionOrder != null "> and question_order = #{questionOrder}</if>
+        </where>
+    </select>
+    
+    <select id="selectSurveyQuestionByQuestionId" parameterType="String" resultMap="SurveyQuestionResult">
+        <include refid="selectSurveyQuestionVo"/>
+        where question_id = #{questionId}
+    </select>
+        
+    <insert id="insertSurveyQuestion" parameterType="SurveyQuestion" useGeneratedKeys="true" keyProperty="questionId">
+        insert into survey_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionnaireId != null">questionnaire_id,</if>
+            <if test="questionType != null">question_type,</if>
+            <if test="questionTitle != null">question_title,</if>
+            <if test="questionOrder != null">question_order,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionnaireId != null">#{questionnaireId},</if>
+            <if test="questionType != null">#{questionType},</if>
+            <if test="questionTitle != null">#{questionTitle},</if>
+            <if test="questionOrder != null">#{questionOrder},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSurveyQuestion" parameterType="SurveyQuestion">
+        update survey_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionnaireId != null">questionnaire_id = #{questionnaireId},</if>
+            <if test="questionType != null">question_type = #{questionType},</if>
+            <if test="questionTitle != null">question_title = #{questionTitle},</if>
+            <if test="questionOrder != null">question_order = #{questionOrder},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where question_id = #{questionId}
+    </update>
+
+    <delete id="deleteSurveyQuestionByQuestionId" parameterType="String">
+        delete from survey_question where question_id = #{questionId}
+    </delete>
+
+    <delete id="deleteSurveyQuestionByQuestionIds" parameterType="String">
+        delete from survey_question where question_id in 
+        <foreach item="questionId" collection="array" open="(" separator="," close=")">
+            #{questionId}
+        </foreach>
+    </delete>
+</mapper>

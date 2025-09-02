@@ -1,0 +1,63 @@
+package com.doctor.survey.service;
+
+import java.util.List;
+import com.doctor.survey.domain.SurveyQuestion;
+
+/**
+ * 调查问卷问题，用于存储问卷中的问题Service接口
+ * 
+ * @author guo
+ * @date 2024-01-19
+ */
+public interface ISurveyQuestionService 
+{
+    /**
+     * 查询调查问卷问题，用于存储问卷中的问题
+     * 
+     * @param questionId 调查问卷问题，用于存储问卷中的问题主键
+     * @return 调查问卷问题，用于存储问卷中的问题
+     */
+    public SurveyQuestion selectSurveyQuestionByQuestionId(String questionId);
+
+    /**
+     * 查询调查问卷问题，用于存储问卷中的问题列表
+     * 
+     * @param surveyQuestion 调查问卷问题，用于存储问卷中的问题
+     * @return 调查问卷问题，用于存储问卷中的问题集合
+     */
+    public List<SurveyQuestion> selectSurveyQuestionList(SurveyQuestion surveyQuestion);
+
+    /**
+     * 新增调查问卷问题，用于存储问卷中的问题
+     * 
+     * @param surveyQuestion 调查问卷问题，用于存储问卷中的问题
+     * @return 结果
+     */
+    public int insertSurveyQuestion(SurveyQuestion surveyQuestion);
+
+    /**
+     * 修改调查问卷问题，用于存储问卷中的问题
+     * 
+     * @param surveyQuestion 调查问卷问题，用于存储问卷中的问题
+     * @return 结果
+     */
+    public int updateSurveyQuestion(SurveyQuestion surveyQuestion);
+
+    /**
+     * 批量删除调查问卷问题，用于存储问卷中的问题
+     * 
+     * @param questionIds 需要删除的调查问卷问题，用于存储问卷中的问题主键集合
+     * @return 结果
+     */
+    public int deleteSurveyQuestionByQuestionIds(String[] questionIds);
+
+    /**
+     * 删除调查问卷问题，用于存储问卷中的问题信息
+     * 
+     * @param questionId 调查问卷问题，用于存储问卷中的问题主键
+     * @return 结果
+     */
+    public int deleteSurveyQuestionByQuestionId(String questionId);
+
+    List<SurveyQuestion> selectSurveyQuestionListByQuestionId(String questionnaireId);
+}

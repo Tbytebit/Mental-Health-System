@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- 圆形背景 -->
+  <circle cx="50" cy="50" r="45" fill="#9C27B0" />
+  
+  <!-- 头部 -->
+  <circle cx="50" cy="40" r="20" fill="#FFFFFF" />
+  
+  <!-- 身体 -->
+  <path d="M30,70 Q50,90 70,70" stroke="#FFFFFF" stroke-width="8" fill="none" />
+  
+  <!-- 眼睛（闭合状态，表示冥想） -->
+  <path d="M40,37 Q43,34 46,37" stroke="#333333" stroke-width="2" fill="none" />
+  <path d="M54,37 Q57,34 60,37" stroke="#333333" stroke-width="2" fill="none" />
+  
+  <!-- 平静的表情 -->
+  <path d="M45,45 L55,45" stroke="#333333" stroke-width="2" fill="none" />
+  
+  <!-- 莲花图案 -->
+  <path d="M50,75 L45,70 Q40,72 45,75 T50,78 L55,75 Q60,72 55,70 Z" fill="#FFD54F" />
+  <path d="M50,75 L42,68 Q38,72 42,76 T50,80 L58,76 Q62,72 58,68 Z" fill="#FFB74D" />
+</svg>

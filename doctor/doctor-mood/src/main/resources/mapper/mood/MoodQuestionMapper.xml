@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.mood.mapper.MoodQuestionMapper">
+    
+    <resultMap type="com.doctor.mood.domain.entity.MoodQuestion" id="MoodQuestionResult">
+        <id property="questionId" column="question_id"/>
+        <result property="scaleId" column="scale_id"/>
+        <result property="questionContent" column="question_content"/>
+        <result property="questionType" column="question_type"/>
+        <result property="questionOptions" column="question_options"/>
+        <result property="scoreRules" column="score_rules"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMoodQuestionVo">
+        select question_id, scale_id, question_content, question_type, question_options, score_rules, order_num, 
+               status, del_flag, create_by, create_time, update_by, update_time, remark
+        from mood_question
+    </sql>
+
+    <select id="selectMoodQuestionList" parameterType="com.doctor.mood.domain.entity.MoodQuestion" resultMap="MoodQuestionResult">
+        <include refid="selectMoodQuestionVo"/>
+        <where>  
+            <if test="scaleId != null "> and scale_id = #{scaleId}</if>
+            <if test="questionContent != null  and questionContent != ''"> and question_content like concat('%', #{questionContent}, '%')</if>
+            <if test="questionType != null  and questionType != ''"> and question_type = #{questionType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            and del_flag = '0'
+        </where>
+        order by order_num
+    </select>
+    
+    <select id="selectMoodQuestionByQuestionId" parameterType="Long" resultMap="MoodQuestionResult">
+        <include refid="selectMoodQuestionVo"/>
+        where question_id = #{questionId} and del_flag = '0'
+    </select>
+
+    <select id="selectMoodQuestionByScaleId" parameterType="Long" resultMap="MoodQuestionResult">
+        <include refid="selectMoodQuestionVo"/>
+        where scale_id = #{scaleId} and del_flag = '0'
+        order by order_num
+    </select>
+        
+    <insert id="insertMoodQuestion" parameterType="com.doctor.mood.domain.entity.MoodQuestion" useGeneratedKeys="true" keyProperty="questionId">
+        insert into mood_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="scaleId != null">scale_id,</if>
+            <if test="questionContent != null and questionContent != ''">question_content,</if>
+            <if test="questionType != null">question_type,</if>
+            <if test="questionOptions != null">question_options,</if>
+            <if test="scoreRules != null">score_rules,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="scaleId != null">#{scaleId},</if>
+            <if test="questionContent != null and questionContent != ''">#{questionContent},</if>
+            <if test="questionType != null">#{questionType},</if>
+            <if test="questionOptions != null">#{questionOptions},</if>
+            <if test="scoreRules != null">#{scoreRules},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMoodQuestion" parameterType="com.doctor.mood.domain.entity.MoodQuestion">
+        update mood_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scaleId != null">scale_id = #{scaleId},</if>
+            <if test="questionContent != null and questionContent != ''">question_content = #{questionContent},</if>
+            <if test="questionType != null">question_type = #{questionType},</if>
+            <if test="questionOptions != null">question_options = #{questionOptions},</if>
+            <if test="scoreRules != null">score_rules = #{scoreRules},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where question_id = #{questionId}
+    </update>
+
+    <delete id="deleteMoodQuestionByQuestionId" parameterType="Long">
+        update mood_question set del_flag = '2' where question_id = #{questionId}
+    </delete>
+
+    <delete id="deleteMoodQuestionByQuestionIds" parameterType="String">
+        update mood_question set del_flag = '2' where question_id in 
+        <foreach item="questionId" collection="array" open="(" separator="," close=")">
+            #{questionId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteMoodQuestionByScaleId" parameterType="Long">
+        update mood_question set del_flag = '2' where scale_id = #{scaleId}
+    </delete>
+</mapper> 

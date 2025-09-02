@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.ActivityReservationMapper">
+    
+    <resultMap type="ActivityReservation" id="ActivityReservationResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="cover"    column="cover"    />
+        <result property="details"    column="details"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="location"    column="location"    />
+        <result property="phone"    column="phone"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectActivityReservationVo">
+        select id, user_id, name, cover, details, start_time, end_time, location, phone,activity_id, del_flag, create_by, create_time, update_by, update_time, remark from t_activity_reservation
+    </sql>
+
+    <select id="selectActivityReservationList" parameterType="ActivityReservation" resultMap="ActivityReservationResult">
+        <include refid="selectActivityReservationVo"/>
+        <where>
+            del_flag = 0
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="location != null  and location != ''"> and location like concat('%', #{location}, '%')</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectActivityReservationById" parameterType="Long" resultMap="ActivityReservationResult">
+        <include refid="selectActivityReservationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActivityReservation" parameterType="ActivityReservation">
+        insert into t_activity_reservation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="cover != null">cover,</if>
+            <if test="details != null">details,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="location != null">location,</if>
+            <if test="location != null">phone,</if>
+            <if test="activityId != null">activity_id,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="details != null">#{details},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="location != null">#{location},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="activityId != null">#{activityId},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivityReservation" parameterType="ActivityReservation">
+        update t_activity_reservation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="cover != null">cover = #{cover},</if>
+            <if test="details != null">details = #{details},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="activity_id != null">phone = #{activityId},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActivityReservationById" parameterType="Long">
+        update t_activity_reservation  set del_flag = 2  where id = #{id}
+    </delete>
+
+    <delete id="deleteActivityReservationByIds" parameterType="String">
+        update t_activity_reservation  set del_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.web.mapper.FeedbackMapper">
+    
+    <resultMap type="com.doctor.web.domain.Feedback" id="FeedbackResult">
+        <result property="feedbackId"    column="feedback_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="feedbackContent"    column="feedback_content"    />
+        <result property="feedbackType"    column="feedback_type"    />
+        <result property="feedbackTime"    column="feedback_time"    />
+        <result property="phone"    column="phone"    />
+        <result property="feedbackReply"    column="feedback_reply"    />
+        <result property="url"    column="url"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectFeedbackVo">
+        select feedback_id, user_id, feedback_content, feedback_type, feedback_time, phone, feedback_reply, url, del_flag, create_by, create_time, update_by, update_time, remark from t_feedback
+    </sql>
+
+    <select id="selectFeedbackList" parameterType="com.doctor.web.domain.Feedback" resultMap="FeedbackResult">
+        <include refid="selectFeedbackVo"/>
+        <where>
+            del_flag = 0
+            <if test="feedbackType != null  and feedbackType != ''"> and feedback_type = #{feedbackType}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="feedbackReply != null  and feedbackReply != ''"> and feedback_reply = #{feedbackReply}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectFeedbackByFeedbackId" parameterType="Long" resultMap="FeedbackResult">
+        <include refid="selectFeedbackVo"/>
+        where feedback_id = #{feedbackId}
+    </select>
+    <select id="countDay" resultType="java.lang.Integer">
+        SELECT COUNT(feedback_id) FROM t_feedback WHERE del_flag =0 AND user_id = #{userId}
+    </select>
+
+    <insert id="insertFeedback" parameterType="com.doctor.web.domain.Feedback" useGeneratedKeys="true" keyProperty="feedbackId">
+        insert into t_feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="feedbackContent != null">feedback_content,</if>
+            <if test="feedbackType != null">feedback_type,</if>
+            <if test="feedbackTime != null">feedback_time,</if>
+            <if test="phone != null">phone,</if>
+            <if test="feedbackReply != null">feedback_reply,</if>
+            <if test="url != null">url,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="feedbackContent != null">#{feedbackContent},</if>
+            <if test="feedbackType != null">#{feedbackType},</if>
+            <if test="feedbackTime != null">#{feedbackTime},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="feedbackReply != null">#{feedbackReply},</if>
+            <if test="url != null">#{url},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeedback" parameterType="com.doctor.web.domain.Feedback">
+        update t_feedback
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="feedbackContent != null">feedback_content = #{feedbackContent},</if>
+            <if test="feedbackType != null">feedback_type = #{feedbackType},</if>
+            <if test="feedbackTime != null">feedback_time = #{feedbackTime},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="feedbackReply != null">feedback_reply = #{feedbackReply},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where feedback_id = #{feedbackId}
+    </update>
+
+    <delete id="deleteFeedbackByFeedbackId" parameterType="Long">
+        delete from t_feedback where feedback_id = #{feedbackId}
+    </delete>
+
+    <update id="deleteFeedbackByFeedbackIds" parameterType="String">
+        update t_feedback  set del_flag = 2 where feedback_id in
+        <foreach item="feedbackId" collection="array" open="(" separator="," close=")">
+            #{feedbackId}
+        </foreach>
+    </update>
+</mapper>

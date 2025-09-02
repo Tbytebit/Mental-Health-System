@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.forum.mapper.ForumLikeMapper">
+    
+    <resultMap type="com.doctor.forum.domain.entity.ForumLike" id="ForumLikeResult">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="targetId" column="target_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    
+    <sql id="selectForumLikeVo">
+        select id, type, target_id, user_id, del_flag, create_by, create_time, 
+        update_by, update_time, remark
+        from forum_like
+    </sql>
+    
+    <select id="selectForumLikeList" parameterType="com.doctor.forum.domain.entity.ForumLike" resultMap="ForumLikeResult">
+        <include refid="selectForumLikeVo"/>
+        <where>
+            del_flag = '0'
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="targetId != null">
+                AND target_id = #{targetId}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectForumLikeById" parameterType="Long" resultMap="ForumLikeResult">
+        <include refid="selectForumLikeVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+    
+    <select id="selectForumLikeByTypeAndTargetIdAndUserId" parameterType="com.doctor.forum.domain.entity.ForumLike" resultMap="ForumLikeResult">
+        <include refid="selectForumLikeVo"/>
+        where type = #{type} and target_id = #{targetId} and user_id = #{userId} and del_flag = '0'
+    </select>
+    
+    <insert id="insertForumLike" parameterType="com.doctor.forum.domain.entity.ForumLike" useGeneratedKeys="true" keyProperty="id">
+        insert into forum_like (
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="targetId != null">target_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            del_flag,
+            create_time
+        ) values (
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="targetId != null">#{targetId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            '0',
+            sysdate()
+        )
+    </insert>
+    
+    <update id="updateForumLike" parameterType="com.doctor.forum.domain.entity.ForumLike">
+        update forum_like
+        <set>
+            <if test="type != null">type = #{type},</if>
+            <if test="targetId != null">target_id = #{targetId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+    
+    <delete id="deleteForumLikeById" parameterType="Long">
+        update forum_like set del_flag = '1' where id = #{id}
+    </delete>
+    
+    <delete id="deleteForumLikeByIds" parameterType="Long">
+        update forum_like set del_flag = '1' where id in 
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteForumLikeByTypeAndTargetIdAndUserId" parameterType="com.doctor.forum.domain.entity.ForumLike">
+        delete from forum_like 
+        where type = #{type} and target_id = #{targetId} and user_id = #{userId}
+    </delete>
+    
+</mapper> 

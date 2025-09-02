@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.survey.mapper.SurveyOptionAnswerMapper">
+
+    <resultMap id="BaseResultMap" type="com.doctor.survey.domain.SurveyOptionAnswer">
+            <id property="option_id" column="option_id" jdbcType="BIGINT"/>
+            <id property="answer_id" column="answer_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        option_id,answer_id
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from survey_option_answer
+        where  option_id = #{option_id,jdbcType=BIGINT} AND answer_id = #{answer_id,jdbcType=BIGINT} 
+    </select>
+
+    <select id="countAnswerByOptionId" parameterType="String" resultType="java.lang.String">
+        select COUNT(answer_id)
+        from survey_option_answer
+        where option_id = #{option_id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from survey_option_answer
+        where  option_id = #{option_id,jdbcType=BIGINT} AND answer_id = #{answer_id,jdbcType=BIGINT} 
+    </delete>
+
+    <delete id="deleteByAnswerIds" parameterType="String">
+        delete from survey_option_answer
+        where answer_id in
+        <foreach item="answerId" collection="array" open="(" separator="," close=")">
+            #{answerId}
+        </foreach>
+    </delete>
+
+    <insert id="insert">
+        insert into survey_option_answer
+        ( option_id,answer_id)
+        values (#{option_id,jdbcType=BIGINT},#{answer_id,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective">
+        insert into survey_option_answer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="option_id != null">option_id,</if>
+                <if test="answer_id != null">answer_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="option_id != null">#{option_id,jdbcType=BIGINT},</if>
+                <if test="answer_id != null">#{answer_id,jdbcType=BIGINT},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.doctor.survey.domain.SurveyOptionAnswer">
+        update survey_option_answer
+        <set>
+        </set>
+        where   option_id = #{option_id,jdbcType=BIGINT} AND answer_id = #{answer_id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.doctor.survey.domain.SurveyOptionAnswer">
+        update survey_option_answer
+        set 
+        where   option_id = #{option_id,jdbcType=BIGINT} AND answer_id = #{answer_id,jdbcType=BIGINT} 
+    </update>
+</mapper>

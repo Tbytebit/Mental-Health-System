@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doctor.survey.mapper.SurveyAnswerMapper">
+    
+    <resultMap type="SurveyAnswer" id="SurveyAnswerResult">
+        <result property="answerId"    column="answer_id"    />
+        <result property="respondentsId"    column="respondents_id"    />
+        <result property="questionId"    column="question_id"    />
+        <result property="answer"    column="answer"    />
+    </resultMap>
+
+    <sql id="selectSurveyAnswerVo">
+        select answer_id, respondents_id, question_id, answer from survey_answer
+    </sql>
+
+    <select id="selectSurveyAnswerList" parameterType="SurveyAnswer" resultMap="SurveyAnswerResult">
+        <include refid="selectSurveyAnswerVo"/>
+        <where>  
+            <if test="respondentsId != null  and respondentsId != ''"> and respondents_id = #{respondentsId}</if>
+            <if test="questionId != null  and questionId != ''"> and question_id = #{questionId}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+        </where>
+    </select>
+    
+    <select id="selectSurveyAnswerByAnswerId" parameterType="String" resultMap="SurveyAnswerResult">
+        <include refid="selectSurveyAnswerVo"/>
+        where answer_id = #{answerId}
+    </select>
+
+    <select id="selectSurveyAnswerByQuestionIdAndRespondentsId" parameterType="SurveyAnswer" resultMap="SurveyAnswerResult">
+        <include refid="selectSurveyAnswerVo"/>
+        <where>
+            <if test="respondentsId != null  and respondentsId != ''"> and respondents_id = #{respondentsId}</if>
+            <if test="questionId != null  and questionId != ''"> and question_id = #{questionId}</if>
+        </where>
+    </select>
+
+    <select id="selectSurveyAnswerByAnswer" parameterType="SurveyAnswer" resultMap="SurveyAnswerResult">
+        select *
+        from survey_answer
+        where question_id = #{questionId} and respondents_id = #{respondentsId}
+    </select>
+
+    <insert id="insertSurveyAnswer" parameterType="SurveyAnswer" useGeneratedKeys="true" keyProperty="answerId">
+        insert into survey_answer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="respondentsId != null">respondents_id,</if>
+            <if test="questionId != null">question_id,</if>
+            <if test="answer != null">answer,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="respondentsId != null">#{respondentsId},</if>
+            <if test="questionId != null">#{questionId},</if>
+            <if test="answer != null">#{answer},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSurveyAnswer" parameterType="SurveyAnswer">
+        update survey_answer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="respondentsId != null">respondents_id = #{respondentsId},</if>
+            <if test="questionId != null">question_id = #{questionId},</if>
+            <if test="answer != null">answer = #{answer},</if>
+        </trim>
+        where answer_id = #{answerId}
+    </update>
+
+    <delete id="deleteSurveyAnswerByAnswerId" parameterType="String">
+        delete from survey_answer where answer_id = #{answerId}
+    </delete>
+
+    <delete id="deleteSurveyAnswerByAnswerIds" parameterType="String">
+        delete from survey_answer where answer_id in 
+        <foreach item="answerId" collection="array" open="(" separator="," close=")">
+            #{answerId}
+        </foreach>
+    </delete>
+</mapper>
