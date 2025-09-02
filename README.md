@@ -18,26 +18,25 @@
 
 1.  
     
-    ![erp](E:\Users\ASUS\Desktop\cursor\erp.png)
+    ![erp](img/erp.png)
 2.  
     
-    ![APPfront](E:\Users\ASUS\Desktop\cursor\APPfront.png)
+    ![APPfront](img\APPfront.png)
 3.  
     
-    ![ai](E:\Users\ASUS\Desktop\cursor\ai.png)
+    ![ai](img\ai.png)
 4.  
     
-    ![diary](E:\Users\ASUS\Desktop\cursor\diary.png)
+    ![diary](img\diary.png)
 5.  
     
-    ![zhiliao](E:\Users\ASUS\Desktop\cursor\zhiliao.png)
+    ![zhiliao](img\zhiliao.png)
 6.  
     
-    ![mood](E:\Users\ASUS\Desktop\cursor\mood.png)
+    ![mood](img\mood.png)
 7.  
     
-    ![forum](E:\Users\ASUS\Desktop\cursor\forum.png)
-    
+    ![forum](img\forum.png)
     
 8.  
 9.  
@@ -47,5 +46,4 @@
 #### 联系方式
 
 ​	qq：930909249
-
 
