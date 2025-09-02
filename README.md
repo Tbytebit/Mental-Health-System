@@ -18,25 +18,25 @@
 
 1.  
     
-    ![alt text]([erp.png (1854×981)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/erp.png))
+    ![img]([erp.png (1854×981)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/erp.png))
 2.  
     
-    ![alt text]([APPfront.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/APPfront.png))
+    ![img]([APPfront.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/APPfront.png))
 3.  
     
-    ![alt text]([ai.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/ai.png))
+    ![img]([ai.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/ai.png))
 4.  
     
-    ![alt text]([diary.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/diary.png))
+    ![img]([diary.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/diary.png))
 5.  
     
-    ![alt text]([zhiliao.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/zhiliao.png))
+    ![img]([zhiliao.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/zhiliao.png))
 6.  
     
-    ![alt text]([mood.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/mood.png))
+    ![img]([mood.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/mood.png))
 7.  
     
-    ![alt text]([forum.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/forum.png))
+    ![img]([forum.png (560×829)](https://gitee.com/zhangjinyu-zhjiyu/mentalhealthsystem/raw/master/img/forum.png))
     
 8.  
 9.  
